@@ -1,0 +1,5 @@
+Model,RMSE,MAE,MAPE
+ARIMA,1.23,0.89,3.5%
+SARIMA,1.15,0.85,3.0%
+Prophet,1.1,0.8,2.8%
+LSTM,1.08,0.75,2.6%
