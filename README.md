@@ -57,5 +57,5 @@ Project Goals:
 --Add multivariate time series support
 --Deploy the Streamlit app on the cloud (e.g., Streamlit Cloud or Heroku)
 --Include real-time data updates and sentiment analysis integration
+![Uploading Screenshot 2025-07-10 231905.png…]()
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/992e7db5-9b5e-4b52-acf1-bba4da81507d" />
