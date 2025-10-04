@@ -6,7 +6,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime, timedelta
 import warnings
+import os
+
+# Suppress all warnings including TensorFlow
 warnings.filterwarnings('ignore')
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow logging
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations to avoid warnings
 
 # Model imports with error handling
 try:
@@ -29,6 +34,9 @@ except ImportError:
 
 try:
     import tensorflow as tf
+    # Additional TensorFlow warning suppression
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+    tf.get_logger().setLevel('ERROR')
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import LSTM, Dense
     from sklearn.preprocessing import MinMaxScaler
@@ -41,7 +49,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 # Page configuration
 st.set_page_config(
     page_title="Stock Price Forecasting Dashboard",
-    page_icon="📈",
+    
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -280,21 +288,23 @@ def fit_lstm_model(data, sequence_length=60, epochs=20):
         X_train, X_test = X[:train_size], X[train_size:]
         y_train, y_test = y[:train_size], y[train_size:]
         
-        # Build model
-        model = Sequential([
-            LSTM(50, return_sequences=True, input_shape=(X.shape[1], 1)),
-            LSTM(50, return_sequences=False),
-            Dense(25),
-            Dense(1)
-        ])
-        
-        model.compile(optimizer='adam', loss='mse')
-        
-        # Train model
-        model.fit(X_train, y_train, epochs=epochs, batch_size=32, verbose=0)
-        
-        # Make predictions
-        test_predictions = model.predict(X_test)
+        # Build model with additional warning suppression
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            model = Sequential([
+                LSTM(50, return_sequences=True, input_shape=(X.shape[1], 1)),
+                LSTM(50, return_sequences=False),
+                Dense(25),
+                Dense(1)
+            ])
+            
+            model.compile(optimizer='adam', loss='mse')
+            
+            # Train model
+            model.fit(X_train, y_train, epochs=epochs, batch_size=32, verbose=0)
+            
+            # Make predictions
+            test_predictions = model.predict(X_test, verbose=0)
         
         # Inverse transform
         test_predictions = scaler.inverse_transform(test_predictions)
@@ -522,12 +532,12 @@ def main():
         # Initial page
         st.info(" Configure your settings in the sidebar and click 'Run Analysis' to start!")
         
-        st.subheader("Features")
+        st.subheader(" Features")
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown("""
-            **Data Analysis:**
+            ** Data Analysis:**
             - Real-time stock data from Yahoo Finance
             - Historical price trends and statistics
             - Interactive visualizations
@@ -557,12 +567,12 @@ def main():
         status_col1, status_col2 = st.columns(2)
         
         with status_col1:
-            st.write(" ARIMA Available" if ARIMA_AVAILABLE else "❌ ARIMA Not Available")
-            st.write(" SARIMA Available" if SARIMA_AVAILABLE else "❌ SARIMA Not Available")
+            st.write(" ARIMA Available" if ARIMA_AVAILABLE else " ARIMA Not Available")
+            st.write(" SARIMA Available" if SARIMA_AVAILABLE else " SARIMA Not Available")
         
         with status_col2:
-            st.write(" Prophet Available" if PROPHET_AVAILABLE else "❌ Prophet Not Available")
-            st.write(" LSTM Available" if LSTM_AVAILABLE else "❌ LSTM Not Available")
+            st.write(" Prophet Available" if PROPHET_AVAILABLE else " Prophet Not Available")
+            st.write(" LSTM Available" if LSTM_AVAILABLE else " LSTM Not Available")
         
         if not any([ARIMA_AVAILABLE, SARIMA_AVAILABLE, PROPHET_AVAILABLE, LSTM_AVAILABLE]):
             st.error(" No forecasting libraries available. Please install required packages.")
@@ -573,3 +583,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+    
