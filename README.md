@@ -58,6 +58,6 @@ Project Goals:
 --Deploy the Streamlit app on the cloud (e.g., Streamlit Cloud or Heroku)
 --Include real-time data updates and sentiment analysis integration
 
-<img width="1920" height="1017" alt="Screenshot 2025-07-10 231905" src="https://github.com/user-attachments/assets/ef3e2faf-8376-4211-b3b8-1b952c1e873b" />
 
+<img width="1920" height="1008" alt="Screenshot 2025-10-04 215815" src="https://github.com/user-attachments/assets/8ec57100-d4ed-405a-b5cb-e6cd99d2dd0b" />
 
